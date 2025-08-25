@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Results</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+</head>
+<body>
+  <h1>Exam Results</h1>
+  <table border="1" id="resultsTable">
+    <tr>
+      <th>Student Name</th>
+      <th>Correct</th>
+      <th>Wrong</th>
+      <th>Score</th>
+    </tr>
+  </table>
+
+  <script>
+    // Firebase Config (parehas sa index.html)
+    const firebaseConfig = {
+      apiKey: "YOUR-API-KEY",
+      authDomain: "ExamSystem",
+      databaseURL: "https://examsystem-8d049-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "YOUR-PROJECT",
+      storageBucket: "YOUR-PROJECT.appspot.com",
+      messagingSenderId: "SENDER-ID",
+      appId: "APP-ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Fetch results
+    db.ref("exam_results").on("value", (snapshot) => {
+      const data = snapshot.val();
+      let table = `
+        <tr>
+          <th>Student Name</th>
+          <th>Correct</th>
+          <th>Wrong</th>
+          <th>Score</th>
+        </tr>
+      `;
+      for (let student in data) {
+        table += `
+          <tr>
+            <td>${student}</td>
+            <td>${data[student].correct}</td>
+            <td>${data[student].wrong}</td>
+            <td>${data[student].score}</td>
+          </tr>
+        `;
+      }
+      document.getElementById("resultsTable").innerHTML = table;
+    });
+  </script>
+</body>
+</html>
